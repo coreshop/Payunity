@@ -39,10 +39,36 @@ class Payunity_Payment
 
     public $presentationCurrency;
     
+    public $presentationUsage;
+    
     public $sandbox = false;
     
     public static $LIVE_URL = "https://payunity-core.eu/frontend/payment.prc";
     public static $TEST_URL = "https://test.payunity-core.eu/frontend/payment.prc";
+    
+    public static $PROPERTY_KEYS = array(
+        
+        "securitySender" => "SECURITY.SENDER",
+        "userLogin" => "USER.LOGIN",
+        "userPwd" => "USER.PWD",
+        "transactionChannel" => "TRANSACTION.CHANNEL",
+        "transactionMode" => "TRANSACTION.MODE",
+        "requestVersion" => "REQUEST.VERSION",
+        "identificationTransactionId" => "IDENTIFICATION.TRANSACTIONID",
+        "frontendEnabled" => "FRONTEND.ENABLED",
+        "frontendPopup" => "FRONTEND.POPUP",
+        "frontendMode" => "FRONTEND.MODE",
+        "frontendLanguage" => "FRONTEND.LANGUAGE",
+        "paymentCode" => "PAYMENT.CODE",
+        "frontendCssPath" => "FRONTEND.CSS_PATH",
+        "frontendJavascriptPath" => "FRONTEND.JSCRIPT_PATH",
+        "frontendHeight" => "FRONTEND.HEIGHT",
+        "frontendResponseUrl" => "FRONTEND.RESPONSE_URL",
+        "presentationAmount" => "PRESENTATION.AMOUNT",
+        "presentationCurrency" => "PRESENTATION.CURRENCY",
+        "presentationUsage" => "PRESENTATION.USAGE"
+        
+    );
     
     public function __construct($config)
     {
@@ -50,14 +76,150 @@ class Payunity_Payment
         {
             if(property_exists($this,$key))
             {
-                $this->$key = $property;
+                $setter = "set" . ucfirst($key);
+                
+                if(method_exists($this, $setter))
+                {
+                    $this->$setter($value);
+                }
             }
         }
         
-        if(!isset($this->securitySender) || $this->userLogin || $this->userPwd || $this->transactionChannel)
+        $requiredParameters = array(
+            "securitySender",
+            "userLogin",
+            "userPwd",
+            "transactionChannel"
+        );
+        
+        foreach($requiredParameters as $req)
         {
-            throw Exception("missing required parameters");
+            if(!isset($this->$req))
+                throw new Exception("missing required parameter '$req'");
         }
+        
+        if(substr($this->frontendResponseUrl, 0, 1) == "/")
+        {
+            $pageURL = "http";
+         
+            if ($_SERVER["HTTPS"] == "on") 
+            {
+                $pageURL .= "s";
+            }
+            
+            $pageURL .= "://";
+            
+            if ($_SERVER["SERVER_PORT"] != "80") 
+            {
+                $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
+            } 
+            else 
+            {
+                $pageURL .= $_SERVER["SERVER_NAME"];
+            }
+            
+            $this->setFrontendResponseUrl($pageURL . $this->frontendResponseUrl);
+            
+        }
+    }
+    
+    public function doPayment()
+    {
+        $parameters = $this->getParameters();
+
+        foreach (array_keys($parameters) AS $key)
+        {
+            $$key .= is_bool($parameters[$key]) ? $parameters[$key] ? "true" : "false" : $parameters[$key];
+            $$key = urlencode($$key);
+            $$key .= "&";
+            $var = strtoupper($key);
+            $value = $$key;
+            $result .= "$var=$value";
+        }
+        
+        $strPOST = stripslashes($result);
+
+        $url = $this->getSandbox() ? Payunity_Payment::$TEST_URL : Payunity_Payment::$LIVE_URL;
+        
+        $cpt = curl_init();
+        curl_setopt($cpt, CURLOPT_URL, $url);
+        curl_setopt($cpt, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($cpt, CURLOPT_USERAGENT, "php ctpepost");
+        curl_setopt($cpt, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($cpt, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($cpt, CURLOPT_POST, 1);
+        curl_setopt($cpt, CURLOPT_POSTFIELDS, $strPOST);
+        $curlresultURL = curl_exec($cpt);
+        $curlerror = curl_error($cpt);
+        $curlinfo = curl_getinfo($cpt);
+        curl_close($cpt);
+        
+        $r_arr = explode("&",$curlresultURL);
+        
+        foreach($r_arr AS $buf)
+        {
+            $temp = urldecode($buf);
+            $temp = explode("=",$temp,2);
+            
+            $postatt = $temp[0];
+            $postvar = $temp[1];
+            $returnvalue[$postatt]=$postvar;
+        }
+        
+        $processingresult = $returnvalue['POST.VALIDATION'];
+        $redirectURL = $returnvalue['FRONTEND.REDIRECT_URL'];
+        
+        if ($processingresult == "ACK")
+        {
+            print_r($returnvalue);
+            if (strstr($redirectURL, "http")) // redirect url is returned ==> everything ok
+            {
+                header("Location: $redirectURL");
+            }
+            else
+            {
+                print_r($processingresult);exit;
+            }
+        }// there is a connection-problem to the ctpe server ... redirect to error page (change the URL to YOUR error page)
+        else
+        {
+            echo "IS ERROR<br/>";
+            echo $curlerror . "<br/>";
+            var_dump($strPOST);
+            var_dump($returnvalue);exit;
+            throw new Exception($strPOST);
+        }
+    }
+    
+    protected function getParameters()
+    {
+        $properties = array_keys(get_class_vars(get_class($this)));
+        $parameters = array();
+        
+        foreach($properties as $property)
+        {
+            $parameterName = $this->getKeyForPropertyName($property);
+            
+            if($parameterName)
+            {
+                $getter = "get" . ucfirst($property);
+                
+                if(method_exists($this, $getter))
+                {
+                    $parameters[$parameterName] = $this->$getter();
+                }
+            }
+        }
+        
+        return $parameters;
+    }
+    
+    protected function getKeyForPropertyName($propertyName)
+    {
+        if(array_key_exists($propertyName, Payunity_Payment::$PROPERTY_KEYS))
+            return Payunity_Payment::$PROPERTY_KEYS[$propertyName];
+        
+        return null;
     }
     
     public function getSecuritySender() {
@@ -210,6 +372,15 @@ class Payunity_Payment
 
     public function setPresentationAmount($presentationAmount) {
         $this->presentationAmount = $presentationAmount;
+        return $this;
+    }
+    
+    public function getPresentationUsage() {
+        return $this->presentationUsage;
+    }
+
+    public function setPresentationUsage($presentationUsage) {
+        $this->presentationUsage = $presentationUsage;
         return $this;
     }
 
