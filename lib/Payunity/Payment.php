@@ -100,25 +100,9 @@ class Payunity_Payment
         
         if(substr($this->frontendResponseUrl, 0, 1) == "/")
         {
-            $pageURL = "http";
-         
-            if ($_SERVER["HTTPS"] == "on") 
-            {
-                $pageURL .= "s";
-            }
+            $serverUrl = Payunity_Plugin::getUrl();
             
-            $pageURL .= "://";
-            
-            if ($_SERVER["SERVER_PORT"] != "80") 
-            {
-                $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
-            } 
-            else 
-            {
-                $pageURL .= $_SERVER["SERVER_NAME"];
-            }
-            
-            $this->setFrontendResponseUrl($pageURL . $this->frontendResponseUrl);
+            $this->setFrontendResponseUrl($serverUrl. $this->frontendResponseUrl);
             
         }
     }

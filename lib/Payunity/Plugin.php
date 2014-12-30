@@ -48,6 +48,29 @@ public function preDispatch($e)
     {
         unlink(PIMCORE_WEBSITE_PATH . self::$installedFileName);
     }
+    
+    public static function getUrl()
+    {
+        $pageURL = "http";
+         
+        if ($_SERVER["HTTPS"] == "on") 
+        {
+            $pageURL .= "s";
+        }
+        
+        $pageURL .= "://";
+        
+        if ($_SERVER["SERVER_PORT"] != "80") 
+        {
+            $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
+        } 
+        else 
+        {
+            $pageURL .= $_SERVER["SERVER_NAME"];
+        }
+            
+        return $pageURL;
+    }
 }
 
 
