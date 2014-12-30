@@ -1,0 +1,19 @@
+{
+    "name": "pfaffenbauer/payunity",
+    "type": "pimcore-plugin",
+    "license": "Simple BSD",
+    "description": "Payunity Payment",
+    "keywords": ["pimcore","payunity"],
+    "homepage": "https://github.com/dpfaffenbauer/pimcore-payunity",
+    "authors": [
+        {
+            "name": "Dominik Pfaffenbauer",
+            "email": "dominik@pfaffenbauer.at",
+            "homepage": "http://www.pfaffenbauer.at/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+      
+    }
+}  
