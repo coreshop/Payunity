@@ -36,7 +36,7 @@
 
 			<!-- css files with path relative to plugin-directory -->
 			<pluginCssPaths>
-                <path>/plugins/Payunity/static/css/example.css</path>
+                <!-- <path>/plugins/Payunity/static/css/example.css</path> -->
 			</pluginCssPaths>
 		</plugin>
 </zend-config>
