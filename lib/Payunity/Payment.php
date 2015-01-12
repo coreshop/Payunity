@@ -43,7 +43,7 @@ class Payunity_Payment
     
     public $sandbox = false;
     
-    public static $LIVE_URL = "https://payunity-core.eu/frontend/payment.prc";
+    public static $LIVE_URL = "https://payunity.com/frontend/payment.prc";
     public static $TEST_URL = "https://test.payunity-core.eu/frontend/payment.prc";
     
     public static $PROPERTY_KEYS = array(
@@ -167,10 +167,7 @@ class Payunity_Payment
         }// there is a connection-problem to the ctpe server ... redirect to error page (change the URL to YOUR error page)
         else
         {
-            echo "IS ERROR<br/>";
-            echo $curlerror . "<br/>";
-            var_dump($strPOST);
-            var_dump($returnvalue);exit;
+            print_r($processingresult);exit;
             throw new Exception($strPOST);
         }
     }
