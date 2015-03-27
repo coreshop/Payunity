@@ -28,8 +28,6 @@ class Payunity_CoreshopController extends CoreShop_Controller_Action_Payment {
                     $payment->setPayed(true);
                     $payment->save();
                     
-                    $this->session->orderId = $payment->getOrder()->getId();
-                    
                     print CoreShop_Tool::getWebsiteUrl() . $this->view->url(array("action" => "thankyou", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 } 
                 else 
