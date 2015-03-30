@@ -4,8 +4,8 @@ class Payunity_Shop_Install
 {
     public function attachEvents()
     {
-        CoreShop::getEventManager()->attach("install.post", array($this, "installPost"));
-        CoreShop::getEventManager()->attach("uninstall.pre", array($this, "uninstallPre"));
+        \CoreShop\Plugin::getEventManager()->attach("install.post", array($this, "installPost"));
+        \CoreShop\Plugin::getEventManager()->attach("uninstall.pre", array($this, "uninstallPre"));
     }
     
     public function installPost($e)

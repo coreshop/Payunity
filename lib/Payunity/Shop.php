@@ -8,13 +8,13 @@ class Payunity_Shop implements CoreShop_Interface_Payment
     {
         self::getInstall()->attachEvents();
         
-        CoreShop::getEventManager()->attach("payment.getProvider", function($e) {
+        \CoreShop\Plugin::getEventManager()->attach("payment.getProvider", function($e) {
             //$cart = $e->getParam("cart");
 
             return $this;
         });
         
-        CoreShop::getEventManager()->attach('controller.init', function($e) {
+        \CoreShop\Plugin::getEventManager()->attach('controller.init', function($e) {
             $controller = $e->getTarget();
             
             $controller->view->setScriptPath(
@@ -49,12 +49,12 @@ class Payunity_Shop implements CoreShop_Interface_Payment
         return "payment_payunity";
     }
     
-    public function getPaymentFee(Object_CoreShopCart $cart)
+    public function getPaymentFee(\Pimcore\Model\Object\ $cart)
     {
         return 0;
     }
     
-    public function processPayment(Object_CoreShopOrder $order)
+    public function processPayment(\Pimcore\Model\Object\CoreShopOrder $order)
     {
         $coreShopPayment = $order->createPayment($this, $order->getTotal());
         $config = Payunity_Plugin::getConfigArray();
