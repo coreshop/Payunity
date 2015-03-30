@@ -1,6 +1,6 @@
 <?php
     
-class Payunity_Shop implements CoreShop_Interface_Payment
+class Payunity_Shop implements \CoreShop\Plugin\Payment
 {
     public static $install;
     
@@ -49,7 +49,7 @@ class Payunity_Shop implements CoreShop_Interface_Payment
         return "payment_payunity";
     }
     
-    public function getPaymentFee(\Pimcore\Model\Object\ $cart)
+    public function getPaymentFee(\Pimcore\Model\Object\CoreShopCart $cart)
     {
         return 0;
     }
