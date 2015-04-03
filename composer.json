@@ -3,7 +3,7 @@
     "type": "pimcore-plugin",
     "license": "Simple BSD",
     "description": "Payunity Payment",
-    "keywords": ["pimcore","payunity"],
+    "keywords": ["pimcore","payunity","coreshop-payment"],
     "homepage": "https://github.com/dpfaffenbauer/pimcore-payunity",
     "authors": [
         {

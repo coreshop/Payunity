@@ -1,6 +1,6 @@
 <?php
-    
-class Payunity_Shop_Install
+
+class Payunity_Shop_Install implements \CoreShop\Plugin\InstallPlugin
 {
     public function attachEvents()
     {
@@ -12,13 +12,24 @@ class Payunity_Shop_Install
     {
         $shopInstaller = $e->getParam("installer");
 
-        $shopInstaller->createObjectBrick("CoreShopPaymentPayunity", PIMCORE_PLUGINS_PATH . "/Payunity/install/objectbrick-CoreShopPaymentPayunity.json");
+        $this->install($shopInstaller);
+
     }
     
     public function uninstallPre($e)
     {
         $shopInstaller = $e->getParam("installer");
 
-        $shopInstaller->removeObjectBrick("CoreShopPaymentPayunity");
+        $this->uninstall($shopInstaller);
+    }
+
+    public function install(\CoreShop\Plugin\Install $installer)
+    {
+        $installer->createObjectBrick("CoreShopPaymentPayunity", PIMCORE_PLUGINS_PATH . "/Payunity/install/objectbrick-CoreShopPaymentPayunity.json");
+    }
+
+    public function uninstall(\CoreShop\Plugin\Install $installer)
+    {
+        $installer->removeObjectBrick("CoreShopPaymentPayunity");
     }
 }

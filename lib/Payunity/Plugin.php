@@ -45,13 +45,25 @@ class Payunity_Plugin  extends Pimcore_API_Plugin_Abstract implements Pimcore_AP
                                 <userPwd></userPwd>
                             </payunity>
                         </zend-config>';
-                        
-        file_put_contents(PIMCORE_WEBSITE_PATH . self::$configFile, $configFile);
+
+        if(!file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
+            file_put_contents(PIMCORE_WEBSITE_PATH . self::$configPath, $configFile);
+
+        if(class_exists("\CoreShop\Plugin"))
+        {
+            \CoreShop\Plugin::installPlugin(self::getShop()->getInstall());
+        }
     }
     
     public static function uninstall()
     {
-        unlink(PIMCORE_WEBSITE_PATH . self::$configPath);
+        if(file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
+         unlink(PIMCORE_WEBSITE_PATH . self::$configPath);
+
+        if(class_exists("\CoreShop\Plugin"))
+        {
+            \CoreShop\Plugin::uninstallPlugin(self::getShop()->getInstall());
+        }
     }
     
     /**

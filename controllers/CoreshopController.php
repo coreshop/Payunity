@@ -1,7 +1,13 @@
 <?php
 
+use CoreShop\Controller\Action\Payment;
+use Pimcore\Model\Object\Objectbrick\Data\CoreShopPaymentPayunity;
+use Pimcore\Model\Object\CoreShopPayment;
 
-class Payunity_CoreshopController extends CoreShop_Controller_Action_Payment {
+use CoreShop\Tool;
+
+
+class Payunity_CoreshopController extends Payment {
     
     public function paymentReturnAction () {
         // reachable via /plugin/Payunity/coreshop/payment-return
@@ -13,13 +19,13 @@ class Payunity_CoreshopController extends CoreShop_Controller_Action_Payment {
         if ($returnvalue) {
             $transactionIdentification = $_REQUEST['IDENTIFICATION_TRANSACTIONID'];
 
-            $payment = Object_CoreShopPayment::findByTransactionIdentifier($transactionIdentification);
+            $payment = CoreShopPayment::findByTransactionIdentifier($transactionIdentification);
 
             if ($payment) 
             {
                 if (strstr($returnvalue, "ACK")) 
                 {
-                    $dataBrick = new Object_Objectbrick_Data_CoreShopPaymentPayunity($payment);
+                    $dataBrick = new CoreShopPaymentPayunity($payment);
                     $dataBrick->setIdentificationUniqeId($_POST['IDENTIFICATION_UNIQUEID']);
                     $dataBrick->setIdentificationShortId($_POST['IDENTIFICATION_SHORTID']);
             
@@ -28,21 +34,21 @@ class Payunity_CoreshopController extends CoreShop_Controller_Action_Payment {
                     $payment->setPayed(true);
                     $payment->save();
                     
-                    print CoreShop_Tool::getWebsiteUrl() . $this->view->url(array("action" => "thankyou", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
+                    print Tool::getWebsiteUrl() . $this->view->url(array("action" => "thankyou", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 } 
                 else 
                 {
-                    print CoreShop_Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
+                    print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 }
             } 
             else 
             {
-                print CoreShop_Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
+                print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
             }
         } 
         else 
         {
-            print CoreShop_Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
+            print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
         }
         
         exit;
