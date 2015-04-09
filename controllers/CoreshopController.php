@@ -33,21 +33,29 @@ class Payunity_CoreshopController extends Payment {
                     $payment->setDatePayment(new Zend_Date($_POST['PROCESSING_TIMESTAMP']));
                     $payment->setPayed(true);
                     $payment->save();
+
+                    $this->paymentSuccess($payment);
                     
                     print Tool::getWebsiteUrl() . $this->view->url(array("action" => "thankyou", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 } 
                 else 
                 {
+                    $this->paymentFail();
+
                     print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 }
             } 
             else 
             {
+                $this->paymentFail();
+
                 print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
             }
         } 
         else 
         {
+            $this->paymentFail();
+
             print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
         }
         
