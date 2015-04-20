@@ -1,6 +1,6 @@
 <?php
     
-class Payunity_Shop implements \CoreShop\Plugin\Payment
+class Payunity_Shop implements \CoreShop\Model\Plugin\Payment
 {
     public static $install;
     

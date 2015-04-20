@@ -1,6 +1,6 @@
 <?php
 
-class Payunity_Shop_Install implements \CoreShop\Plugin\InstallPlugin
+class Payunity_Shop_Install implements \CoreShop\Model\Plugin\InstallPlugin
 {
     public function attachEvents()
     {
