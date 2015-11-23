@@ -35,28 +35,29 @@ class Payunity_CoreshopController extends Payment {
                     $payment->save();
 
                     $this->paymentSuccess($payment);
-                    
-                    print Tool::getWebsiteUrl() . $this->view->url(array("action" => "thankyou", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
+
+
+                    print Pimcore\Tool::getHostUrl() . $this->view->url(array("action" => "thankyou", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 } 
                 else 
                 {
                     $this->paymentFail();
 
-                    print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
+                    print Pimcore\Tool::getHostUrl() . $this->view->url(array("action" => "error", "lang" => $payment->getOrder()->getLang()), "coreshop_checkout");
                 }
             } 
             else 
             {
                 $this->paymentFail();
 
-                print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
+                print Pimcore\Tool::getHostUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
             }
         } 
         else 
         {
             $this->paymentFail();
 
-            print Tool::getWebsiteUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
+            print Pimcore\Tool::getHostUrl() . $this->view->url(array("action" => "error", "lang" => "de"), "coreshop_checkout");
         }
         
         exit;
