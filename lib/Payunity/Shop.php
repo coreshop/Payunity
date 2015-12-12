@@ -1,20 +1,29 @@
 <?php
-    
-class Payunity_Shop implements \CoreShop\Model\Plugin\Payment
+
+namespace Payunity;
+
+use CoreShop\Model\Cart;
+use CoreShop\Model\Order;
+use CoreShop\Model\Plugin\Payment as CorePayment;
+use CoreShop\Plugin as CorePlugin;
+
+use Payunity\Shop\Install;
+
+class hop implements CorePayment
 {
     public static $install;
     
     public function attachEvents()
     {
         self::getInstall()->attachEvents();
-        
-        \CoreShop\Plugin::getEventManager()->attach("payment.getProvider", function($e) {
+
+        CorePlugin::getEventManager()->attach("payment.getProvider", function($e) {
             //$cart = $e->getParam("cart");
 
             return $this;
         });
-        
-        \CoreShop\Plugin::getEventManager()->attach('controller.init', function($e) {
+
+        CorePlugin::getEventManager()->attach('controller.init', function($e) {
             $controller = $e->getTarget();
             
             $controller->view->setScriptPath(
@@ -49,17 +58,17 @@ class Payunity_Shop implements \CoreShop\Model\Plugin\Payment
         return "payment_payunity";
     }
     
-    public function getPaymentFee(\Pimcore\Model\Object\CoreShopCart $cart)
+    public function getPaymentFee(Cart $cart)
     {
         return 0;
     }
     
-    public function processPayment(\Pimcore\Model\Object\CoreShopOrder $order)
+    public function processPayment(Order $order)
     {
         $coreShopPayment = $order->createPayment($this, $order->getTotal());
-        $config = Payunity_Plugin::getConfigArray();
+        $config = Plugin::getConfigArray();
 
-        $payment = new Payunity_Payment(array(
+        $payment = new Payment(array(
             "securitySender" => $config->payunity->senderId,
             "userLogin" => $config->payunity->userId,
             "userPwd" => $config->payunity->userPwd,
@@ -86,11 +95,11 @@ class Payunity_Shop implements \CoreShop\Model\Plugin\Payment
     }
     
     /**
-     * @return Payunity_Shop_Install
+     * @return Install
      */
     public static function getInstall() {
         if(!self::$install) {
-            self::$install = new Payunity_Shop_Install();
+            self::$install = new Install();
         }
         return self::$install;
     }

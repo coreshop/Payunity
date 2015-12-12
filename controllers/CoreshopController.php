@@ -30,7 +30,7 @@ class Payunity_CoreshopController extends Payment {
                     $dataBrick->setIdentificationShortId($_POST['IDENTIFICATION_SHORTID']);
             
                     $payment->getPaymentInformation()->setCoreShopPaymentPayunity($dataBrick);
-                    $payment->setDatePayment(new Zend_Date($_POST['PROCESSING_TIMESTAMP']));
+                    $payment->setDatePayment(new \Zend_Date($_POST['PROCESSING_TIMESTAMP']));
                     $payment->setPayed(true);
                     $payment->save();
 

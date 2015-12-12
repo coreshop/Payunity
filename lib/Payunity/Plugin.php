@@ -1,11 +1,18 @@
 <?php
 
+namespace Payunity;
 
-class Payunity_Plugin  extends Pimcore_API_Plugin_Abstract implements Pimcore_API_Plugin_Interface 
+use Payunity\Shop;
+
+use Pimcore\API\Plugin\AbstractPlugin;
+use Pimcore\API\Plugin\PluginInterface;
+
+class Plugin  extends AbstractPlugin implements PluginInterface
 {
     protected static $configPath = "/var/config/payunity.xml";
+
     /**
-     * @var Payunity_Shop
+     * @var Shop
      */
     private static $shop;
     
@@ -21,7 +28,7 @@ class Payunity_Plugin  extends Pimcore_API_Plugin_Abstract implements Pimcore_AP
      */
     public static function getShop() {
         if(!self::$shop) {
-            self::$shop = new Payunity_Shop();
+            self::$shop = new Shop();
         }
         return self::$shop;
     }
@@ -49,7 +56,7 @@ class Payunity_Plugin  extends Pimcore_API_Plugin_Abstract implements Pimcore_AP
         if(!file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
             file_put_contents(PIMCORE_WEBSITE_PATH . self::$configPath, $configFile);
 
-        if(class_exists("\CoreShop\Plugin"))
+        if(class_exists("\\CoreShop\\Plugin"))
         {
             \CoreShop\Plugin::installPlugin(self::getShop()->getInstall());
         }
@@ -60,7 +67,7 @@ class Payunity_Plugin  extends Pimcore_API_Plugin_Abstract implements Pimcore_AP
         if(file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
          unlink(PIMCORE_WEBSITE_PATH . self::$configPath);
 
-        if(class_exists("\CoreShop\Plugin"))
+        if(class_exists("\\CoreShop\\Plugin"))
         {
             \CoreShop\Plugin::uninstallPlugin(self::getShop()->getInstall());
         }
@@ -72,7 +79,7 @@ class Payunity_Plugin  extends Pimcore_API_Plugin_Abstract implements Pimcore_AP
      */
     public static function getConfigArray()
     {
-        $config = new Zend_Config_Xml(PIMCORE_WEBSITE_PATH . self::$configPath);
+        $config = new \Zend_Config_Xml(PIMCORE_WEBSITE_PATH . self::$configPath);
 
         return $config;
     }

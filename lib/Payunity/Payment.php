@@ -1,7 +1,8 @@
 <?php
 
+namespace Payunity;
 
-class Payunity_Payment
+class Payment
 {
     public $securitySender;
     
@@ -95,12 +96,12 @@ class Payunity_Payment
         foreach($requiredParameters as $req)
         {
             if(!isset($this->$req))
-                throw new Exception("missing required parameter '$req'");
+                throw new \Exception("missing required parameter '$req'");
         }
         
         if(substr($this->frontendResponseUrl, 0, 1) == "/")
         {
-            $serverUrl = Payunity_Plugin::getUrl();
+            $serverUrl = Plugin::getUrl();
             
             $this->setFrontendResponseUrl($serverUrl. $this->frontendResponseUrl);
             
@@ -110,6 +111,7 @@ class Payunity_Payment
     public function doPayment()
     {
         $parameters = $this->getParameters();
+        $result = "";
 
         foreach (array_keys($parameters) AS $key)
         {
@@ -123,7 +125,7 @@ class Payunity_Payment
         
         $strPOST = stripslashes($result);
 
-        $url = $this->getSandbox() ? Payunity_Payment::$TEST_URL : Payunity_Payment::$LIVE_URL;
+        $url = $this->getSandbox() ? self::$TEST_URL : self::$LIVE_URL;
         
         $cpt = curl_init();
         curl_setopt($cpt, CURLOPT_URL, $url);
@@ -167,8 +169,7 @@ class Payunity_Payment
         }// there is a connection-problem to the ctpe server ... redirect to error page (change the URL to YOUR error page)
         else
         {
-            print_r($processingresult);exit;
-            throw new Exception($strPOST);
+            throw new \Exception($strPOST);
         }
     }
     
@@ -197,8 +198,8 @@ class Payunity_Payment
     
     protected function getKeyForPropertyName($propertyName)
     {
-        if(array_key_exists($propertyName, Payunity_Payment::$PROPERTY_KEYS))
-            return Payunity_Payment::$PROPERTY_KEYS[$propertyName];
+        if(array_key_exists($propertyName, self::$PROPERTY_KEYS))
+            return self::$PROPERTY_KEYS[$propertyName];
         
         return null;
     }
