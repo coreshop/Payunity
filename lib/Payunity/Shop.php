@@ -9,7 +9,7 @@ use CoreShop\Plugin as CorePlugin;
 
 use Payunity\Shop\Install;
 
-class hop implements CorePayment
+class Shop implements CorePayment
 {
     public static $install;
     
