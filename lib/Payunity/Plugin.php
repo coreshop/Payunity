@@ -1,4 +1,16 @@
 <?php
+/**
+ * Payunity
+ *
+ * LICENSE
+ *
+ * This source file is subject to the GNU General Public License version 3 (GPLv3)
+ * For the full copyright and license information, please view the LICENSE.md and gpl-3.0.txt
+ * files that are distributed with this source code.
+ *
+ * @copyright  Copyright (c) 2015 Dominik Pfaffenbauer (http://dominik.pfaffenbauer.at)
+ * @license    http://www.coreshop.org/license     GNU General Public License version 3 (GPLv3)
+ */
 
 namespace Payunity;
 
@@ -15,7 +27,10 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      * @var Shop
      */
     private static $shop;
-    
+
+    /**
+     * @param $e
+     */
     public function preDispatch($e)
     {
         parent::preDispatch();
@@ -24,7 +39,7 @@ class Plugin  extends AbstractPlugin implements PluginInterface
     }
 
     /**
-     * @return Payunity_Shop
+     * @return Shop
      */
     public static function getShop() {
         if(!self::$shop) {
@@ -33,11 +48,19 @@ class Plugin  extends AbstractPlugin implements PluginInterface
         return self::$shop;
     }
 
+    /**
+     * Check if Plugin is installed
+     *
+     * @return bool
+     */
     public static function isInstalled()
     {
         return file_exists(PIMCORE_WEBSITE_PATH . self::$configPath);
     }
 
+    /**
+     * Install Plugin
+     */
     public static function install()
     {
         //Install Config File
@@ -61,7 +84,10 @@ class Plugin  extends AbstractPlugin implements PluginInterface
             \CoreShop\Plugin::installPlugin(self::getShop()->getInstall());
         }
     }
-    
+
+    /**
+     * Uninstall Plugin
+     */
     public static function uninstall()
     {
         if(file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
@@ -82,30 +108,6 @@ class Plugin  extends AbstractPlugin implements PluginInterface
         $config = new \Zend_Config_Xml(PIMCORE_WEBSITE_PATH . self::$configPath);
 
         return $config;
-    }
-
-    
-    public static function getUrl()
-    {
-        $pageURL = "http";
-         
-        if ($_SERVER["HTTPS"] == "on") 
-        {
-            $pageURL .= "s";
-        }
-        
-        $pageURL .= "://";
-        
-        if ($_SERVER["SERVER_PORT"] != "80") 
-        {
-            $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
-        } 
-        else 
-        {
-            $pageURL .= $_SERVER["SERVER_NAME"];
-        }
-            
-        return $pageURL;
     }
 }
 
