@@ -157,14 +157,13 @@ class Payment
         
         if ($processingresult == "ACK")
         {
-            print_r($returnvalue);
             if (strstr($redirectURL, "http")) // redirect url is returned ==> everything ok
             {
-                header("Location: $redirectURL");
+                return $redirectURL;
             }
             else
             {
-                print_r($processingresult);exit;
+                return "ERROR URL";
             }
         }// there is a connection-problem to the ctpe server ... redirect to error page (change the URL to YOUR error page)
         else

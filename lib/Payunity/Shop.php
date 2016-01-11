@@ -9,10 +9,13 @@ use CoreShop\Plugin as CorePlugin;
 
 use Payunity\Shop\Install;
 
-class Shop implements CorePayment
+class Shop extends CorePayment
 {
     public static $install;
-    
+
+    /**
+     * @throws \Zend_EventManager_Exception_InvalidArgumentException
+     */
     public function attachEvents()
     {
         self::getInstall()->attachEvents();
@@ -22,51 +25,63 @@ class Shop implements CorePayment
 
             return $this;
         });
-
-        CorePlugin::getEventManager()->attach('controller.init', function($e) {
-            $controller = $e->getTarget();
-            
-            $controller->view->setScriptPath(
-                array_merge(
-                    $controller->view->getScriptPaths(),
-                    array(
-                        PIMCORE_PLUGINS_PATH . '/Payunity/views/scripts/',
-                        PIMCORE_WEBSITE_PATH . '/coreshop/Payunity/views/scripts/'
-                    )
-                )
-            );
-        });
     }
-    
+
+    /**
+     * @return string
+     */
     public function getName()
     {
         return "Payunity";
     }
-    
+
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return "";
     }
-    
+
+    /**
+     * @return string
+     */
     public function getImage()
     {
         return "/plugins/Payunity/static/img/payunity.gif";
     }
-    
+
+    /**
+     * @return string
+     */
     public function getIdentifier()
     {
-        return "payment_payunity";
+        return "Payunity";
     }
-    
+
+    /**
+     * @param Cart $cart
+     * @return int
+     */
     public function getPaymentFee(Cart $cart)
     {
         return 0;
     }
-    
-    public function processPayment(Order $order)
-    {
-        $coreShopPayment = $order->createPayment($this, $order->getTotal());
+
+    /**
+     * Process Validation for Payment
+     *
+     * @param Cart $cart
+     * @return mixed
+     */
+    public function process(Cart $cart) {
+        //$coreShopPayment = $order->createPayment($this, $order->getTotal());
         $config = Plugin::getConfigArray();
+
+        $identifier = uniqid();
+
+        $cart->setCustomIdentifier($identifier);
+        $cart->save();
 
         $payment = new Payment(array(
             "securitySender" => $config->payunity->senderId,
@@ -75,25 +90,60 @@ class Shop implements CorePayment
             "transactionChannel" => $config->payunity->channelId,
             "transactionMode" => $config->payunity->mode,
             "requestVersion" => "1.0",
-            "identificationTransactionId" => $coreShopPayment->getTransactionIdentifier(),
+            "identificationTransactionId" => $identifier,
             "frontendEnabled" => true,
             "frontendPopup" => false,
             "frontendMode" => "WPF_PRESELECTION",
             "frontendLanguage" => "de",
             "paymentCode" => "CC.DB",
             "frontendHeight" => "100%",
-            "frontendResponseUrl" => "/plugin/Payunity/coreshop/payment-return",
-            "presentationAmount" => $coreShopPayment->getAmount(),
+            "frontendResponseUrl" => $this->url($this->getIdentifier(), "payment-return"),
+            "presentationAmount" => $cart->getTotal(),
             "presentationCurrency" => "EUR",
             "presentationUsage" => "Astro4Love - Shop",
             "sandbox" => $config->payunity->sandbox == 1 ? true : false
         ));
 
-        $payment->doPayment();
-        
-        return "payunity/shop/start-payment";
+        return $payment->doPayment();
     }
-    
+
+    /**
+     * Get url for confirmation link
+     *
+     * @param Order $order
+     * @return string
+     */
+    public function getConfirmationUrl($order) {
+        return $this->url($this->getIdentifier(), 'confirmation') . "?order=" . $order->getId();
+    }
+
+    /**
+     * get url for validation link
+     *
+     * @return string
+     */
+    public function getProcessValidationUrl() {
+        return $this->url($this->getIdentifier(), 'validate');
+    }
+
+    /**
+     * get url payment link
+     *
+     * @return string
+     */
+    public function getPaymentUrl() {
+        return $this->url($this->getIdentifier(), 'payment');
+    }
+
+    /**
+     * get error url
+     *
+     * @return string
+     */
+    public function getErrorUrl() {
+        return $this->url($this->getIdentifier(), 'error');
+    }
+
     /**
      * @return Install
      */
