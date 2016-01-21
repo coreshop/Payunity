@@ -25,7 +25,7 @@ class Payunity_PaymentController extends Payment {
 
         if ($returnvalue) {
             $transactionIdentification = $_REQUEST['IDENTIFICATION_TRANSACTIONID'];
-            $cart = \CoreShop\Model\Cart::findByCustomIdentifer($transactionIdentification);
+            $cart = \CoreShop\Model\Cart::findByCustomIdentifier($transactionIdentification);
 
             if ($cart instanceof \CoreShop\Model\Cart)
             {
