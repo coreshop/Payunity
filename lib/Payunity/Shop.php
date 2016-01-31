@@ -18,7 +18,6 @@ use CoreShop\Model\Cart;
 use CoreShop\Model\Order;
 use CoreShop\Model\Plugin\Payment as CorePayment;
 use CoreShop\Plugin as CorePlugin;
-
 use Payunity\Shop\Install;
 
 class Shop extends CorePayment
@@ -32,7 +31,7 @@ class Shop extends CorePayment
     {
         self::getInstall()->attachEvents();
 
-        CorePlugin::getEventManager()->attach("payment.getProvider", function($e) {
+        CorePlugin::getEventManager()->attach("payment.getProvider", function ($e) {
             //$cart = $e->getParam("cart");
 
             return $this;
@@ -86,7 +85,8 @@ class Shop extends CorePayment
      * @param Cart $cart
      * @return mixed
      */
-    public function process(Cart $cart) {
+    public function process(Cart $cart)
+    {
         //$coreShopPayment = $order->createPayment($this, $order->getTotal());
         $config = Plugin::getConfigArray();
 
@@ -125,7 +125,8 @@ class Shop extends CorePayment
      * @param Order $order
      * @return string
      */
-    public function getConfirmationUrl($order) {
+    public function getConfirmationUrl($order)
+    {
         return $this->url($this->getIdentifier(), 'confirmation') . "?order=" . $order->getId();
     }
 
@@ -134,7 +135,8 @@ class Shop extends CorePayment
      *
      * @return string
      */
-    public function getProcessValidationUrl() {
+    public function getProcessValidationUrl()
+    {
         return $this->url($this->getIdentifier(), 'validate');
     }
 
@@ -143,7 +145,8 @@ class Shop extends CorePayment
      *
      * @return string
      */
-    public function getPaymentUrl() {
+    public function getPaymentUrl()
+    {
         return $this->url($this->getIdentifier(), 'payment');
     }
 
@@ -152,15 +155,17 @@ class Shop extends CorePayment
      *
      * @return string
      */
-    public function getErrorUrl() {
+    public function getErrorUrl()
+    {
         return $this->url($this->getIdentifier(), 'error');
     }
 
     /**
      * @return Install
      */
-    public static function getInstall() {
-        if(!self::$install) {
+    public static function getInstall()
+    {
+        if (!self::$install) {
             self::$install = new Install();
         }
         return self::$install;

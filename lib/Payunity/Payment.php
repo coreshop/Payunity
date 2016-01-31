@@ -87,14 +87,11 @@ class Payment
     
     public function __construct($config)
     {
-        foreach($config as $key=>$value)
-        {
-            if(property_exists($this,$key))
-            {
+        foreach ($config as $key=>$value) {
+            if (property_exists($this, $key)) {
                 $setter = "set" . ucfirst($key);
                 
-                if(method_exists($this, $setter))
-                {
+                if (method_exists($this, $setter)) {
                     $this->$setter($value);
                 }
             }
@@ -107,18 +104,16 @@ class Payment
             "transactionChannel"
         );
         
-        foreach($requiredParameters as $req)
-        {
-            if(!isset($this->$req))
+        foreach ($requiredParameters as $req) {
+            if (!isset($this->$req)) {
                 throw new \Exception("missing required parameter '$req'");
+            }
         }
         
-        if(substr($this->frontendResponseUrl, 0, 1) == "/")
-        {
+        if (substr($this->frontendResponseUrl, 0, 1) == "/") {
             $serverUrl = Tool::getHostUrl();
             
             $this->setFrontendResponseUrl($serverUrl. $this->frontendResponseUrl);
-            
         }
     }
     
@@ -127,8 +122,7 @@ class Payment
         $parameters = $this->getParameters();
         $result = "";
 
-        foreach (array_keys($parameters) AS $key)
-        {
+        foreach (array_keys($parameters) as $key) {
             $$key .= is_bool($parameters[$key]) ? $parameters[$key] ? "true" : "false" : $parameters[$key];
             $$key = urlencode($$key);
             $$key .= "&";
@@ -146,7 +140,7 @@ class Payment
         curl_setopt($cpt, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($cpt, CURLOPT_USERAGENT, "php ctpepost");
         curl_setopt($cpt, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($cpt, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($cpt, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($cpt, CURLOPT_POST, 1);
         curl_setopt($cpt, CURLOPT_POSTFIELDS, $strPOST);
         $curlresultURL = curl_exec($cpt);
@@ -154,12 +148,11 @@ class Payment
         $curlinfo = curl_getinfo($cpt);
         curl_close($cpt);
         
-        $r_arr = explode("&",$curlresultURL);
+        $r_arr = explode("&", $curlresultURL);
         
-        foreach($r_arr AS $buf)
-        {
+        foreach ($r_arr as $buf) {
             $temp = urldecode($buf);
-            $temp = explode("=",$temp,2);
+            $temp = explode("=", $temp, 2);
             
             $postatt = $temp[0];
             $postvar = $temp[1];
@@ -169,19 +162,16 @@ class Payment
         $processingresult = $returnvalue['POST.VALIDATION'];
         $redirectURL = $returnvalue['FRONTEND.REDIRECT_URL'];
         
-        if ($processingresult == "ACK")
-        {
-            if (strstr($redirectURL, "http")) // redirect url is returned ==> everything ok
-            {
+        if ($processingresult == "ACK") {
+            if (strstr($redirectURL, "http")) {
+                // redirect url is returned ==> everything ok
+
                 return $redirectURL;
-            }
-            else
-            {
+            } else {
                 return "ERROR URL";
             }
         }// there is a connection-problem to the ctpe server ... redirect to error page (change the URL to YOUR error page)
-        else
-        {
+        else {
             throw new \Exception($strPOST);
         }
     }
@@ -191,16 +181,13 @@ class Payment
         $properties = array_keys(get_class_vars(get_class($this)));
         $parameters = array();
         
-        foreach($properties as $property)
-        {
+        foreach ($properties as $property) {
             $parameterName = $this->getKeyForPropertyName($property);
             
-            if($parameterName)
-            {
+            if ($parameterName) {
                 $getter = "get" . ucfirst($property);
                 
-                if(method_exists($this, $getter))
-                {
+                if (method_exists($this, $getter)) {
                     $parameters[$parameterName] = $this->$getter();
                 }
             }
@@ -211,191 +198,230 @@ class Payment
     
     protected function getKeyForPropertyName($propertyName)
     {
-        if(array_key_exists($propertyName, self::$PROPERTY_KEYS))
+        if (array_key_exists($propertyName, self::$PROPERTY_KEYS)) {
             return self::$PROPERTY_KEYS[$propertyName];
+        }
         
         return null;
     }
     
-    public function getSecuritySender() {
+    public function getSecuritySender()
+    {
         return $this->securitySender;
     }
 
-    public function setSecuritySender($securitySender) {
+    public function setSecuritySender($securitySender)
+    {
         $this->securitySender = $securitySender;
         return $this;
     }
 
-    public function getUserLogin() {
+    public function getUserLogin()
+    {
         return $this->userLogin;
     }
 
-    public function setUserLogin($userLogin) {
+    public function setUserLogin($userLogin)
+    {
         $this->userLogin = $userLogin;
         return $this;
     }
 
-    public function getUserPwd() {
+    public function getUserPwd()
+    {
         return $this->userPwd;
     }
 
-    public function setUserPwd($userPwd) {
+    public function setUserPwd($userPwd)
+    {
         $this->userPwd = $userPwd;
         return $this;
     }
 
-    public function getTransactionChannel() {
+    public function getTransactionChannel()
+    {
         return $this->transactionChannel;
     }
 
-    public function setTransactionChannel($transactionChannel) {
+    public function setTransactionChannel($transactionChannel)
+    {
         $this->transactionChannel = $transactionChannel;
         return $this;
     }
 
-    public function getTransactionMode() {
+    public function getTransactionMode()
+    {
         return $this->transactionMode;
     }
 
-    public function setTransactionMode($transactionMode) {
+    public function setTransactionMode($transactionMode)
+    {
         $this->transactionMode = $transactionMode;
         return $this;
     }
 
-    public function getRequestVersion() {
+    public function getRequestVersion()
+    {
         return $this->requestVersion;
     }
 
-    public function setRequestVersion($requestVersion) {
+    public function setRequestVersion($requestVersion)
+    {
         $this->requestVersion = $requestVersion;
         return $this;
     }
 
-    public function getIdentificationTransactionId() {
+    public function getIdentificationTransactionId()
+    {
         return $this->identificationTransactionId;
     }
 
-    public function setIdentificationTransactionId($identificationTransactionId) {
+    public function setIdentificationTransactionId($identificationTransactionId)
+    {
         $this->identificationTransactionId = $identificationTransactionId;
         return $this;
     }
 
-    public function getFrontendEnabled() {
+    public function getFrontendEnabled()
+    {
         return $this->frontendEnabled;
     }
 
-    public function setFrontendEnabled($frontendEnabled) {
+    public function setFrontendEnabled($frontendEnabled)
+    {
         $this->frontendEnabled = $frontendEnabled;
         return $this;
     }
 
-    public function getFrontendPopup() {
+    public function getFrontendPopup()
+    {
         return $this->frontendPopup;
     }
 
-    public function setFrontendPopup($frontendPopup) {
+    public function setFrontendPopup($frontendPopup)
+    {
         $this->frontendPopup = $frontendPopup;
         return $this;
     }
 
-    public function getFrontendMode() {
+    public function getFrontendMode()
+    {
         return $this->frontendMode;
     }
 
-    public function setFrontendMode($frontendMode) {
+    public function setFrontendMode($frontendMode)
+    {
         $this->frontendMode = $frontendMode;
         return $this;
     }
 
-    public function getFrontendLanguage() {
+    public function getFrontendLanguage()
+    {
         return $this->frontendLanguage;
     }
 
-    public function setFrontendLanguage($frontendLanguage) {
+    public function setFrontendLanguage($frontendLanguage)
+    {
         $this->frontendLanguage = $frontendLanguage;
         return $this;
     }
 
-    public function getPaymentCode() {
+    public function getPaymentCode()
+    {
         return $this->paymentCode;
     }
 
-    public function setPaymentCode($paymentCode) {
+    public function setPaymentCode($paymentCode)
+    {
         $this->paymentCode = $paymentCode;
         return $this;
     }
 
-    public function getFrontendCssPath() {
+    public function getFrontendCssPath()
+    {
         return $this->frontendCssPath;
     }
 
-    public function setFrontendCssPath($frontendCssPath) {
+    public function setFrontendCssPath($frontendCssPath)
+    {
         $this->frontendCssPath = $frontendCssPath;
         return $this;
     }
 
-    public function getFrontendJavascriptPath() {
+    public function getFrontendJavascriptPath()
+    {
         return $this->frontendJavascriptPath;
     }
 
-    public function setFrontendJavascriptPath($frontendJavascriptPath) {
+    public function setFrontendJavascriptPath($frontendJavascriptPath)
+    {
         $this->frontendJavascriptPath = $frontendJavascriptPath;
         return $this;
     }
 
-    public function getFrontendHeight() {
+    public function getFrontendHeight()
+    {
         return $this->frontendHeight;
     }
 
-    public function setFrontendHeight($frontendHeight) {
+    public function setFrontendHeight($frontendHeight)
+    {
         $this->frontendHeight = $frontendHeight;
         return $this;
     }
 
-    public function getFrontendResponseUrl() {
+    public function getFrontendResponseUrl()
+    {
         return $this->frontendResponseUrl;
     }
 
-    public function setFrontendResponseUrl($frontendResponseUrl) {
+    public function setFrontendResponseUrl($frontendResponseUrl)
+    {
         $this->frontendResponseUrl = $frontendResponseUrl;
         return $this;
     }
 
-    public function getPresentationAmount() {
+    public function getPresentationAmount()
+    {
         return $this->presentationAmount;
     }
 
-    public function setPresentationAmount($presentationAmount) {
+    public function setPresentationAmount($presentationAmount)
+    {
         $this->presentationAmount = $presentationAmount;
         return $this;
     }
     
-    public function getPresentationUsage() {
+    public function getPresentationUsage()
+    {
         return $this->presentationUsage;
     }
 
-    public function setPresentationUsage($presentationUsage) {
+    public function setPresentationUsage($presentationUsage)
+    {
         $this->presentationUsage = $presentationUsage;
         return $this;
     }
 
-    public function getPresentationCurrency() {
+    public function getPresentationCurrency()
+    {
         return $this->presentationCurrency;
     }
 
-    public function setPresentationCurrency($presentationCurrency) {
+    public function setPresentationCurrency($presentationCurrency)
+    {
         $this->presentationCurrency = $presentationCurrency;
         return $this;
     }
 
-    public function getSandbox() {
+    public function getSandbox()
+    {
         return $this->sandbox;
     }
 
-    public function setSandbox($sandbox) {
+    public function setSandbox($sandbox)
+    {
         $this->sandbox = $sandbox;
         return $this;
     }
 }
-
-

@@ -15,7 +15,6 @@
 namespace Payunity;
 
 use Payunity\Shop;
-
 use Pimcore\API\Plugin\AbstractPlugin;
 use Pimcore\API\Plugin\PluginInterface;
 
@@ -41,8 +40,9 @@ class Plugin  extends AbstractPlugin implements PluginInterface
     /**
      * @return Shop
      */
-    public static function getShop() {
-        if(!self::$shop) {
+    public static function getShop()
+    {
+        if (!self::$shop) {
             self::$shop = new Shop();
         }
         return self::$shop;
@@ -76,11 +76,11 @@ class Plugin  extends AbstractPlugin implements PluginInterface
                             </payunity>
                         </zend-config>';
 
-        if(!file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
+        if (!file_exists(PIMCORE_WEBSITE_PATH . self::$configPath)) {
             file_put_contents(PIMCORE_WEBSITE_PATH . self::$configPath, $configFile);
+        }
 
-        if(class_exists("\\CoreShop\\Plugin"))
-        {
+        if (class_exists("\\CoreShop\\Plugin")) {
             \CoreShop\Plugin::installPlugin(self::getShop()->getInstall());
         }
     }
@@ -90,11 +90,11 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      */
     public static function uninstall()
     {
-        if(file_exists(PIMCORE_WEBSITE_PATH . self::$configPath))
-         unlink(PIMCORE_WEBSITE_PATH . self::$configPath);
+        if (file_exists(PIMCORE_WEBSITE_PATH . self::$configPath)) {
+            unlink(PIMCORE_WEBSITE_PATH . self::$configPath);
+        }
 
-        if(class_exists("\\CoreShop\\Plugin"))
-        {
+        if (class_exists("\\CoreShop\\Plugin")) {
             \CoreShop\Plugin::uninstallPlugin(self::getShop()->getInstall());
         }
     }
@@ -110,5 +110,3 @@ class Plugin  extends AbstractPlugin implements PluginInterface
         return $config;
     }
 }
-
-

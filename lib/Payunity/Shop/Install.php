@@ -16,7 +16,6 @@ namespace Payunity\Shop;
 
 use CoreShop\Plugin;
 use CoreShop\Model\Plugin\InstallPlugin;
-
 use CoreShop\Plugin\Install as Installer;
 
 class Install implements InstallPlugin
