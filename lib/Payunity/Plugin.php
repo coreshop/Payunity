@@ -20,8 +20,6 @@ use Pimcore\API\Plugin\PluginInterface;
 
 class Plugin  extends AbstractPlugin implements PluginInterface
 {
-    protected static $configPath = "/var/config/payunity.xml";
-
     /**
      * @var Shop
      */
@@ -55,7 +53,16 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      */
     public static function isInstalled()
     {
-        return file_exists(PIMCORE_WEBSITE_PATH . self::$configPath);
+        try {
+            \Pimcore\Model\Object\Objectbrick\Definition::getByKey("CoreShopPaymentPayunity");
+
+            return true;
+        }
+        catch(\Exception $e) {
+
+        }
+
+        return false;
     }
 
     /**
@@ -63,23 +70,6 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      */
     public static function install()
     {
-        //Install Config File
-        $configFile = '<?xml version="1.0"?>
-                        <zend-config xmlns:zf="http://framework.zend.com/xml/zend-config-xml/1.0/">
-                            <payunity>
-                                <channelId></channelId>
-                                <mode></mode>
-                                <sandbox>1</sandbox>
-                                <senderId></senderId>
-                                <userId></userId>
-                                <userPwd></userPwd>
-                            </payunity>
-                        </zend-config>';
-
-        if (!file_exists(PIMCORE_WEBSITE_PATH . self::$configPath)) {
-            file_put_contents(PIMCORE_WEBSITE_PATH . self::$configPath, $configFile);
-        }
-
         if (class_exists("\\CoreShop\\Plugin")) {
             \CoreShop\Plugin::installPlugin(self::getShop()->getInstall());
         }
@@ -90,23 +80,29 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      */
     public static function uninstall()
     {
-        if (file_exists(PIMCORE_WEBSITE_PATH . self::$configPath)) {
-            unlink(PIMCORE_WEBSITE_PATH . self::$configPath);
-        }
-
         if (class_exists("\\CoreShop\\Plugin")) {
             \CoreShop\Plugin::uninstallPlugin(self::getShop()->getInstall());
         }
     }
-    
-    /**
-     * @static
-     * @return array
-     */
-    public static function getConfigArray()
-    {
-        $config = new \Zend_Config_Xml(PIMCORE_WEBSITE_PATH . self::$configPath);
 
-        return $config;
+    /**
+     * @return string
+     */
+    public static function getTranslationFileDirectory()
+    {
+        return PIMCORE_PLUGINS_PATH . '/CoreShopCod/static/texts';
+    }
+
+    /**
+     * @param string $language
+     * @return string path to the translation file relative to plugin directory
+     */
+    public static function getTranslationFile($language)
+    {
+        if (is_file(self::getTranslationFileDirectory() . "/$language.csv")) {
+            return "/Payunity/static/texts/$language.csv";
+        } else {
+            return '/Payunity/static/texts/en.csv';
+        }
     }
 }

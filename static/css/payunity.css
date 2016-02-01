@@ -1,4 +1,3 @@
-
-/*#pimcore_panel_toolbar {
-    background: red !important;
-}*/
+.coreshop_icon_payunity{
+    background: url(/pimcore/static/img/icon/flag_blue.png) left center no-repeat!important;
+}

@@ -87,36 +87,7 @@ class Shop extends CorePayment
      */
     public function process(Cart $cart)
     {
-        //$coreShopPayment = $order->createPayment($this, $order->getTotal());
-        $config = Plugin::getConfigArray();
-
-        $identifier = uniqid();
-
-        $cart->setCustomIdentifier($identifier);
-        $cart->save();
-
-        $payment = new Payment(array(
-            "securitySender" => $config->payunity->senderId,
-            "userLogin" => $config->payunity->userId,
-            "userPwd" => $config->payunity->userPwd,
-            "transactionChannel" => $config->payunity->channelId,
-            "transactionMode" => $config->payunity->mode,
-            "requestVersion" => "1.0",
-            "identificationTransactionId" => $identifier,
-            "frontendEnabled" => true,
-            "frontendPopup" => false,
-            "frontendMode" => "WPF_PRESELECTION",
-            "frontendLanguage" => "de",
-            "paymentCode" => "CC.DB",
-            "frontendHeight" => "100%",
-            "frontendResponseUrl" => $this->url($this->getIdentifier(), "payment-return"),
-            "presentationAmount" => $cart->getTotal(),
-            "presentationCurrency" => "EUR",
-            "presentationUsage" => "Astro4Love - Shop",
-            "sandbox" => $config->payunity->sandbox == 1 ? true : false
-        ));
-
-        return $payment->doPayment();
+        return $this->getProcessValidationUrl();
     }
 
     /**

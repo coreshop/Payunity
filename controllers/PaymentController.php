@@ -19,7 +19,36 @@ use CoreShop\Tool;
 
 class Payunity_PaymentController extends Payment
 {
-    
+    public function paymentAction() {
+        $identifier = uniqid();
+
+        $this->cart->setCustomIdentifier($identifier);
+        $this->cart->save();
+
+        $payment = new \Payunity\Payment(array(
+            "securitySender" => \CoreShop\Model\Configuration::get("PAYUNITY.SENDERID"),
+            "userLogin" => \CoreShop\Model\Configuration::get("PAYUNITY.USERID"),
+            "userPwd" => \CoreShop\Model\Configuration::get("PAYUNITY.USERPWD"),
+            "transactionChannel" => \CoreShop\Model\Configuration::get("PAYUNITY.CHANNELID"),
+            "transactionMode" => \CoreShop\Model\Configuration::get("PAYUNITY.MODE"),
+            "requestVersion" => "1.0",
+            "identificationTransactionId" => $identifier,
+            "frontendEnabled" => true,
+            "frontendPopup" => false,
+            "frontendMode" => "WPF_PRESELECTION",
+            "frontendLanguage" => "de",
+            "paymentCode" => "CC.DB",
+            "frontendHeight" => "100%",
+            "frontendResponseUrl" => $this->getModule()->url($this->getModule()->getIdentifier(), "payment-return"),
+            "presentationAmount" => $this->cart->getTotal(),
+            "presentationCurrency" => "EUR",
+            "presentationUsage" => "Astro4Love - Shop",
+            "sandbox" => \CoreShop\Model\Configuration::get("PAYUNITY.SANDBOX")
+        ));
+
+        $this->redirect($payment->doPayment());
+    }
+
     public function paymentReturnAction()
     {
         $returnvalue = $_REQUEST['PROCESSING_RESULT'];
