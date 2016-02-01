@@ -19,7 +19,8 @@ use CoreShop\Tool;
 
 class Payunity_PaymentController extends Payment
 {
-    public function paymentAction() {
+    public function paymentAction()
+    {
         $identifier = uniqid();
 
         $this->cart->setCustomIdentifier($identifier);

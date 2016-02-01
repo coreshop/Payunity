@@ -57,9 +57,7 @@ class Plugin  extends AbstractPlugin implements PluginInterface
             \Pimcore\Model\Object\Objectbrick\Definition::getByKey("CoreShopPaymentPayunity");
 
             return true;
-        }
-        catch(\Exception $e) {
-
+        } catch (\Exception $e) {
         }
 
         return false;
