@@ -11,40 +11,40 @@
  * @license    http://www.coreshop.org/license     GNU General Public License version 3 (GPLv3)
  */
 
-pimcore.registerNS("pimcore.plugin.coreshop.payunity");
+$(document).on("coreShopReady", function() {
+    pimcore.registerNS("pimcore.plugin.coreshop.payunity.plugin");
+    pimcore.plugin.payunity.plugin = Class.create(coreshop.plugin.admin, {
 
-pimcore.plugin.coreshop.payunity = Class.create(coreshop.plugin.admin, {
+        getClassName: function () {
+            return "pimcore.plugin.payunity.plugin";
+        },
 
-    getClassName: function() {
-        return "pimcore.plugin.coreshop.payunity";
-    },
+        initialize: function () {
+            coreshop.plugin.broker.registerPlugin(this);
+        },
 
-    initialize: function() {
-        coreshop.plugin.broker.registerPlugin(this);
-    },
+        uninstall: function () {
+            //TODO remove from menu
+        },
 
-    uninstall: function() {
-        //TODO remove from menu
-    },
+        coreshopReady: function (coreshop, broker) {
+            coreshop.addPluginMenu({
+                text: t("coreshop_payunity"),
+                iconCls: "coreshop_icon_payunity",
+                handler: this.openPayunity
+            });
+        },
 
-    coreshopReady: function (coreshop, broker) {
-        coreshop.addPluginMenu({
-            text: t("coreshop_payunity"),
-            iconCls: "coreshop_icon_payunity",
-            handler: this.openPayunity
-        });
-    },
-
-    openPayunity : function()
-    {
-        try {
-            pimcore.globalmanager.get("coreshop_payunity").activate();
+        openPayunity: function () {
+            try {
+                pimcore.globalmanager.get("coreshop_payunity").activate();
+            }
+            catch (e) {
+                //console.log(e);
+                pimcore.globalmanager.add("coreshop_payunity", new pimcore.plugin.payunity.settings());
+            }
         }
-        catch (e) {
-            //console.log(e);
-            pimcore.globalmanager.add("coreshop_payunity", new pimcore.plugin.coreshop.payunity.settings());
-        }
-    }
+    });
+
+    new pimcore.plugin.payunity.plugin();
 });
-
-new pimcore.plugin.coreshop.payunity();

@@ -11,8 +11,8 @@
  * @license    http://www.coreshop.org/license     GNU General Public License version 3 (GPLv3)
  */
 
-pimcore.registerNS("pimcore.plugin.coreshop.payunity.settings");
-pimcore.plugin.coreshop.payunity.settings = Class.create({
+pimcore.registerNS("pimcore.plugin.payunity.settings");
+pimcore.plugin.payunity.settings = Class.create({
 
     initialize: function () {
         this.getData();
