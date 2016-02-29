@@ -71,10 +71,13 @@ class Shop extends CorePayment
     }
 
     /**
+     * Get Payment Fee
+     *
      * @param Cart $cart
-     * @return int
+     * @param boolean $useTaxes Use Taxes?
+     * @return float
      */
-    public function getPaymentFee(Cart $cart)
+    public function getPaymentFee(Cart $cart, $useTaxes = true)
     {
         return 0;
     }
