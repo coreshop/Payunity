@@ -12,7 +12,7 @@
 
                 <div class="row">
                     <div class="col-xs-12">
-                        <a href="<?=$this->url(array("lang" => $this->language, "action" => "payment"), "coreshop_checkout")?>" class="btn btn-default pull-left">
+                        <a href="<?=$this->url(array("lang" => $this->language, "act" => "payment"), "coreshop_checkout")?>" class="btn btn-default pull-left">
                             <?=$this->translate("Back")?>
                         </a>
 
