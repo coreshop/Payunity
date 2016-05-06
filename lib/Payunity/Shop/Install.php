@@ -22,8 +22,8 @@ class Install implements InstallPlugin
 {
     public function attachEvents()
     {
-        Plugin::getEventManager()->attach("install.post", array($this, "installPost"));
-        Plugin::getEventManager()->attach("uninstall.pre", array($this, "uninstallPre"));
+        \Pimcore::getEventManager()->attach("coreshop.install.post", array($this, "installPost"));
+        \Pimcore::getEventManager()->attach("coreshop.uninstall.pre", array($this, "uninstallPre"));
     }
 
     /**
