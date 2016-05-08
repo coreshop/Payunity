@@ -60,7 +60,7 @@ class Payunity_PaymentController extends Payment
 
             if ($cart instanceof \CoreShop\Model\Cart) {
                 if (strstr($returnvalue, "ACK")) {
-                    $order = $this->getModule()->createOrder($cart, \CoreShop\Model\OrderState::getById(\CoreShop\Model\Configuration::get("SYSTEM.ORDERSTATE.PAYMENT")), $cart->getTotal(), "en"); //TODO: Fix Language
+                    $order = $this->getModule()->createOrder($cart, \CoreShop\Model\Order\State::getById(\CoreShop\Model\Configuration::get("SYSTEM.ORDERSTATE.PAYMENT")), $cart->getTotal(), "en"); //TODO: Fix Language
 
                     $payments = $order->getPayments();
 
