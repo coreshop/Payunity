@@ -14,7 +14,6 @@
 
 use CoreShop\Controller\Action\Payment;
 use Pimcore\Model\Object\Objectbrick\Data\CoreShopPaymentPayunity;
-use Pimcore\Model\Object\CoreShopPayment;
 use CoreShop\Tool;
 
 class Payunity_PaymentController extends Payment
