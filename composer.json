@@ -13,6 +13,6 @@
   }],
   "require": {
     "pimcore/installer-plugin": ">=1",
-    "coreshop/core-shop" : "dev-master"
+    "coreshop/core-shop" : "1.*"
   }
 }
