@@ -12,5 +12,5 @@ Payunity Payment Plugin for Pimcore
 Install with composer
 
 ```
-composer require coreshop/payunity dev-master
+composer require coreshop/payunity 1.0
 ```
