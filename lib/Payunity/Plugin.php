@@ -62,7 +62,14 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      */
     public static function isInstalled()
     {
-        if( !class_exists("CoreShop\\Version") || (int) \CoreShop\Version::getBuildNumber() < self::$requiredCoreShopBuild ) {
+        $p = PIMCORE_PLUGINS_PATH . '/CoreShop/Plugin.xml';
+
+        if( !file_exists($p)) {
+            return false;
+        }
+
+        $config = new \Zend_Config_Xml($p);
+        if( (int) $config->plugin->pluginRevision < self::$requiredCoreShopBuild) {
             return false;
         }
 
