@@ -62,7 +62,7 @@ class Plugin  extends AbstractPlugin implements PluginInterface
      */
     public static function isInstalled()
     {
-        $p = PIMCORE_PLUGINS_PATH . '/CoreShop/Plugin.xml';
+        $p = PIMCORE_PLUGINS_PATH . '/CoreShop/plugin.xml';
 
         if( !file_exists($p)) {
             return false;
