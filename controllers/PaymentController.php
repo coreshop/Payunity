@@ -14,7 +14,6 @@
 
 use CoreShop\Controller\Action\Payment;
 use Pimcore\Model\Object\Objectbrick\Data\CoreShopPaymentPayunity;
-use CoreShop\Tool;
 
 /**
  * Class Payunity_PaymentController
